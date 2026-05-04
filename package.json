@@ -2,6 +2,7 @@
   "name": "fos-report-offline",
   "version": "1.0.0",
   "description": "Offline desktop FOS stock report analyser",
+  "author": "Blackshaws Road Pharmacy <admin@blackshawsroadpharmacy.com.au>",
   "private": true,
   "type": "module",
   "main": "dist-electron/main.js",
@@ -54,23 +55,29 @@
   "build": {
     "appId": "com.pharmacy.fosreport",
     "productName": "FOS Report Offline",
+    "icon": "build/icons/icon.png",
     "asarUnpack": ["node_modules/better-sqlite3/**/*.node", "node_modules/xlsx-js-style/**/*.node"],
     "directories": {
-      "output": "release"
+      "output": "release",
+      "buildResources": "build"
     },
     "mac": {
       "target": ["dmg", "zip"],
-      "category": "public.app-category.medical"
+      "category": "public.app-category.medical",
+      "icon": "build/icons/icon.icns"
     },
     "win": {
-      "target": ["nsis", "portable"]
+      "target": ["nsis", "portable"],
+      "icon": "build/icons/icon.ico"
     },
     "linux": {
-      "target": ["AppImage", "deb"]
+      "target": ["AppImage", "deb"],
+      "icon": "build/icons"
     },
     "files": [
       "dist/**/*",
-      "dist-electron/**/*"
+      "dist-electron/**/*",
+      "build/icons/**/*"
     ]
   }
 }
