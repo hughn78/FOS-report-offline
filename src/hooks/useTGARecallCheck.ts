@@ -1,20 +1,27 @@
+import { useCallback, useEffect, useState } from "react";
+import { checkTGARecalls, type TGAResult } from "@/utils/tga.functions";
+
 export type TGAStatus = "idle" | "loading" | "success" | "error";
 
-export interface TGAResult {
-  ok: boolean;
-  recallsFound: boolean;
-  matches: any[];
-  error?: string;
-}
+export function useTGARecallCheck(productNames: string[], enabled: boolean) {
+  const [status, setStatus] = useState<TGAStatus>("idle");
+  const [result, setResult] = useState<TGAResult | null>(null);
 
-export function useTGARecallCheck() {
-  return {
-    status: "idle" as TGAStatus,
-    result: null as TGAResult | null,
-    error: null as string | null,
-    check: async () => {
-      console.log("[Offline] TGA recall check disabled — no network connection.");
-      return { ok: true, recallsFound: false, matches: [] };
-    },
-  };
+  const run = useCallback(async () => {
+    setStatus("loading");
+    try {
+      const res = await checkTGARecalls({ productNames });
+      setResult(res);
+      setStatus(res.ok ? "success" : "error");
+    } catch {
+      setResult({ ok: false, error: "OFFLINE", checkedAt: new Date().toISOString() });
+      setStatus("error");
+    }
+  }, [productNames]);
+
+  useEffect(() => {
+    if (enabled && status === "idle") void run();
+  }, [enabled, status, run]);
+
+  return { status, result, retry: run };
 }

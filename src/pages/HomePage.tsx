@@ -43,9 +43,10 @@ export default function HomePage() {
     }
     setStatus({ kind: "loading", filename });
     try {
-      // Convert Uint8Array to File-like for the processor
-      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-      const file = new File([blob], filename);
+      // Convert buffer to File for the processor
+      const file = new File([buffer as unknown as BlobPart], filename, {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
       const result = await processFosFile(file);
       if (!result.ok) {
         setStatus({ kind: "error", message: result.error });
@@ -158,7 +159,7 @@ export default function HomePage() {
       const id = await window.electronAPI.db.report.create({
         name: status.filename.replace(/\.xlsx$/i, ""),
         product_count: status.result.rowCount,
-        flag_count: analysis?.flagged.length ?? 0,
+        flag_count: analysis?.totals.flagCount ?? 0,
         file_data: null,
         analysis_data: json,
       });

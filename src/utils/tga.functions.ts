@@ -9,7 +9,8 @@ export type TGAResult =
   | { ok: true; recallsFound: boolean; matches: TGAMatch[]; totalRecallsChecked: number; checkedAt: string }
   | { ok: false; error: string; checkedAt: string };
 
-export async function checkTGARecalls(): Promise<TGAResult> {
+export async function checkTGARecalls(input: { productNames: string[] }): Promise<TGAResult> {
+  // Offline stub — no network call
   return {
     ok: true,
     recallsFound: false,
